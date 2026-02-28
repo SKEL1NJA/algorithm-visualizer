@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { bubbleSort } from "../algorithms/sorting/bubbleSort";
 import ControlPanel from "./ControlPanel";
+import { selectionSort } from "../algorithms/sorting/selectionSort";
 
 const Visualizer = () => {
 
@@ -26,20 +27,30 @@ const Visualizer = () => {
   };
 
   const startSort = async () => {
-    setIsSorting(true);
+  setIsSorting(true);
 
-    if (algorithm === "bubble") {
-      await bubbleSort(
-        array,
-        setArray,
-        setActiveIndices,
-        setSortedIndices,
-        speed
-      );
-    }
+  if (algorithm === "bubble") {
+    await bubbleSort(
+      array,
+      setArray,
+      setActiveIndices,
+      setSortedIndices,
+      speed
+    );
+  }
 
-    setIsSorting(false);
-  };
+  if (algorithm === "selection") {
+    await selectionSort(
+      array,
+      setArray,
+      setActiveIndices,
+      setSortedIndices,
+      speed
+    );
+  }
+
+  setIsSorting(false);
+};
 
   return (
     <div className="flex flex-col items-center bg-gray-950 h-[80vh] p-6">

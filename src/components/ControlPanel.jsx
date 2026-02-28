@@ -11,7 +11,6 @@ const ControlPanel = ({
   return (
     <div className="flex flex-wrap justify-center gap-4 mb-6 text-white">
 
-      {/* Algorithm Selector */}
       <select
         value={algorithm}
         disabled={isSorting}
@@ -19,9 +18,9 @@ const ControlPanel = ({
         className="px-4 py-2 bg-gray-800 rounded"
       >
         <option value="bubble">Bubble Sort</option>
+        <option value="selection">Selection Sort</option>
       </select>
 
-      {/* Generate */}
       <button
         onClick={generateArray}
         disabled={isSorting}
@@ -30,7 +29,6 @@ const ControlPanel = ({
         Generate Array
       </button>
 
-      {/* Start Sort */}
       <button
         onClick={startSort}
         disabled={isSorting}
@@ -39,7 +37,6 @@ const ControlPanel = ({
         Start Sorting
       </button>
 
-      {/* Speed */}
       <div>
         Speed
         <input
