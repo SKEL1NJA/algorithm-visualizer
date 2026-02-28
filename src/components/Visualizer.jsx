@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { bubbleSort } from "../algorithms/sorting/bubbleSort";
 
 const Visualizer = () => {
   const [array, setArray] = useState([]);
@@ -28,6 +29,13 @@ const Visualizer = () => {
         className="mb-6 px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
       >
         Generate New Array
+      </button>
+
+      <button
+        onClick={() => bubbleSort(array, setArray)}
+        className="mb-4 px-6 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+      >
+        Bubble Sort
       </button>
 
       <div className="w-full max-w-6xl h-full border border-gray-700 rounded-lg flex items-end justify-center gap-1 p-4">
