@@ -2,18 +2,18 @@ import { useState, useRef, useEffect } from "react";
 import { bubbleSort } from "../algorithms/sorting/bubbleSort";
 import { selectionSort } from "../algorithms/sorting/selectionSort";
 import { mergeSort } from "../algorithms/sorting/mergeSort";
+import { quickSort } from "../algorithms/sorting/quickSort";
 
 import ControlPanel from "./ControlPanel";
 import AlgorithmInfo from "./AlgorithmInfo";
 
 const Visualizer = () => {
 
-  const createArray = (size) => {
-    return Array.from(
+  const createArray = (size) =>
+    Array.from(
       { length: size },
       () => Math.floor(Math.random() * 100) + 5
     );
-  };
 
   const [arraySize, setArraySize] = useState(40);
   const [array, setArray] = useState(() => createArray(40));
@@ -26,12 +26,19 @@ const Visualizer = () => {
   const [isSorting, setIsSorting] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
 
-  // ✅ LIVE PAUSE REFERENCE
   const pauseRef = useRef(false);
 
   useEffect(() => {
     pauseRef.current = isPaused;
   }, [isPaused]);
+
+  // ✅ Algorithm Router (SCALABLE)
+  const algorithms = {
+    bubble: bubbleSort,
+    selection: selectionSort,
+    merge: mergeSort,
+    quick: quickSort
+  };
 
   const generateArray = () => {
     if (isSorting) return;
@@ -53,30 +60,11 @@ const Visualizer = () => {
       }
     };
 
-    if (algorithm === "bubble") {
-      await bubbleSort(
-        array,
-        setArray,
-        setActiveIndices,
-        setSortedIndices,
-        speed,
-        controls
-      );
-    }
+    const selectedAlgorithm =
+      algorithms[algorithm];
 
-    if (algorithm === "selection") {
-      await selectionSort(
-        array,
-        setArray,
-        setActiveIndices,
-        setSortedIndices,
-        speed,
-        controls
-      );
-    }
-
-    if (algorithm === "merge") {
-      await mergeSort(
+    if (selectedAlgorithm) {
+      await selectedAlgorithm(
         array,
         setArray,
         setActiveIndices,

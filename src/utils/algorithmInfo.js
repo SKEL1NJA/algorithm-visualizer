@@ -1,10 +1,11 @@
 export const algorithmInfo = {
+
   bubble: {
     name: "Bubble Sort",
     time: "O(n²)",
     space: "O(1)",
     description:
-      "Repeatedly compares adjacent elements and swaps them if they are in wrong order."
+      "Repeatedly compares adjacent elements and swaps them."
   },
 
   selection: {
@@ -12,7 +13,7 @@ export const algorithmInfo = {
     time: "O(n²)",
     space: "O(1)",
     description:
-      "Finds the minimum element and places it at the correct position."
+      "Selects minimum element and places it in correct position."
   },
 
   merge: {
@@ -20,6 +21,15 @@ export const algorithmInfo = {
     time: "O(n log n)",
     space: "O(n)",
     description:
-      "Divide and conquer algorithm that recursively splits and merges arrays."
+      "Divide and conquer algorithm that recursively merges sorted halves."
+  },
+
+  quick: {
+    name: "Quick Sort",
+    time: "O(n log n) average",
+    space: "O(log n)",
+    description:
+      "Uses a pivot element to partition the array into smaller subarrays."
   }
+
 };

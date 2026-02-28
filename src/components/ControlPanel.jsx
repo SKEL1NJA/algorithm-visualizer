@@ -25,9 +25,10 @@ const ControlPanel = ({
         <option value="bubble">Bubble Sort</option>
         <option value="selection">Selection Sort</option>
         <option value="merge">Merge Sort</option>
+        <option value="quick">Quick Sort</option>
       </select>
 
-      {/* Generate */}
+      {/* Generate Array */}
       <button
         onClick={generateArray}
         disabled={isSorting}
@@ -36,7 +37,7 @@ const ControlPanel = ({
         Generate
       </button>
 
-      {/* Start */}
+      {/* Start Sorting */}
       <button
         onClick={startSort}
         disabled={isSorting}
@@ -47,24 +48,21 @@ const ControlPanel = ({
 
       {/* Pause / Resume */}
       <button
-        onClick={() =>
-          setIsPaused(prev => !prev)
-        }
+        onClick={() => setIsPaused(prev => !prev)}
         disabled={!isSorting}
         className="px-4 py-2 bg-yellow-600 rounded disabled:bg-gray-600"
       >
         {isPaused ? "Resume" : "Pause"}
       </button>
 
-      {/* Speed Control */}
+      {/* Speed Slider */}
       <div className="flex items-center gap-2">
-        <span>Speed</span>
+        <span>Speed: {speed}</span>
         <input
           type="range"
           min="10"
           max="200"
           value={speed}
-          disabled={!isSorting && false}
           onChange={(e) =>
             setSpeed(Number(e.target.value))
           }
@@ -73,7 +71,7 @@ const ControlPanel = ({
 
       {/* Array Size */}
       <div className="flex items-center gap-2">
-        <span>Size</span>
+        <span>Size: {arraySize}</span>
         <input
           type="range"
           min="10"
