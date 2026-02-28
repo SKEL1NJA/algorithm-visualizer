@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { bfs } from "../algorithms/pathfinding/bfs";
+import { dfs } from "../algorithms/pathfinding/dfs";
 
 const ROWS = 20;
 const COLS = 35;
 
-// ================= GRID CREATION =================
 const createGrid = () => {
   const grid = [];
 
@@ -30,7 +30,7 @@ const createGrid = () => {
   return grid;
 };
 
-const GridVisualizer = () => {
+export default function GridVisualizer() {
 
   const [grid, setGrid] =
     useState(createGrid());
@@ -38,24 +38,8 @@ const GridVisualizer = () => {
   const [speed, setSpeed] =
     useState(20);
 
-  // ================= TOGGLE WALL =================
-  const toggleWall = (row, col) => {
-
-    const newGrid = grid.map(r =>
-      r.map(node => ({ ...node }))
-    );
-
-    const node = newGrid[row][col];
-
-    if (!node.isStart && !node.isEnd) {
-      node.isWall = !node.isWall;
-    }
-
-    setGrid(newGrid);
-  };
-
-  // ================= RESET VISITED + PATH =================
-  const resetVisited = () => {
+  // ================= CLEAR SEARCH =================
+  const clearSearch = () => {
 
     const newGrid = grid.map(row =>
       row.map(node => ({
@@ -67,35 +51,63 @@ const GridVisualizer = () => {
     );
 
     setGrid(newGrid);
+    return newGrid;
   };
 
-  // ================= RUN BFS =================
+  // ================= BFS =================
   const runBFS = async () => {
 
-    const freshGrid = grid.map(row =>
-      row.map(node => ({
-        ...node,
-        isVisited: false,
-        isPath: false,
-        previousNode: null
-      }))
-    );
+    const freshGrid = clearSearch();
 
-    setGrid(freshGrid);
-
-    const startNode =
+    const start =
       freshGrid.flat().find(n => n.isStart);
 
-    const endNode =
+    const end =
       freshGrid.flat().find(n => n.isEnd);
 
     await bfs(
       freshGrid,
-      startNode,
-      endNode,
+      start,
+      end,
       setGrid,
       speed
     );
+  };
+
+  // ================= DFS =================
+  const runDFS = async () => {
+
+    const freshGrid = clearSearch();
+
+    const start =
+      freshGrid.flat().find(n => n.isStart);
+
+    const end =
+      freshGrid.flat().find(n => n.isEnd);
+
+    await dfs(
+      freshGrid,
+      start,
+      end,
+      setGrid,
+      speed
+    );
+  };
+
+  // ================= WALL =================
+  const toggleWall = (row, col) => {
+
+    const newGrid =
+      grid.map(r =>
+        r.map(n => ({ ...n }))
+      );
+
+    const node = newGrid[row][col];
+
+    if (!node.isStart && !node.isEnd)
+      node.isWall = !node.isWall;
+
+    setGrid(newGrid);
   };
 
   // ================= UI =================
@@ -103,7 +115,7 @@ const GridVisualizer = () => {
     <div className="flex flex-col items-center">
 
       <h2 className="text-white text-xl mb-4">
-        Pathfinding Grid
+        Pathfinding Visualizer
       </h2>
 
       {/* CONTROLS */}
@@ -117,12 +129,13 @@ const GridVisualizer = () => {
         </button>
 
         <button
-          onClick={resetVisited}
-          className="px-4 py-2 bg-gray-600 text-white rounded"
+          onClick={runDFS}
+          className="px-4 py-2 bg-purple-600 text-white rounded"
         >
-          Clear Visits
+          Run DFS
         </button>
 
+        {/* SPEED CONTROL */}
         <div className="text-white flex items-center gap-2">
           Speed
           <input
@@ -130,7 +143,7 @@ const GridVisualizer = () => {
             min="5"
             max="100"
             value={speed}
-            onChange={(e)=>
+            onChange={(e) =>
               setSpeed(Number(e.target.value))
             }
           />
@@ -176,6 +189,4 @@ const GridVisualizer = () => {
 
     </div>
   );
-};
-
-export default GridVisualizer;
+}
