@@ -3,6 +3,7 @@ import { bubbleSort } from "../algorithms/sorting/bubbleSort";
 import ControlPanel from "./ControlPanel";
 import { selectionSort } from "../algorithms/sorting/selectionSort";
 import { mergeSort } from "../algorithms/sorting/mergeSort";
+import AlgorithmInfo from "./AlgorithmInfo";
 
 const Visualizer = () => {
 
@@ -66,6 +67,8 @@ const Visualizer = () => {
   return (
     <div className="flex flex-col items-center bg-gray-950 h-[80vh] p-6">
 
+      <AlgorithmInfo algorithm={algorithm} />
+    
       <ControlPanel
         generateArray={generateArray}
         startSort={startSort}
