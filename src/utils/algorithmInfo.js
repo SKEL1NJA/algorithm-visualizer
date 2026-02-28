@@ -38,6 +38,22 @@ export const algorithmInfo = {
     space: "O(1)",
     description:
       "Builds a max heap and repeatedly extracts the maximum element."
+  },
+
+  linear: {
+    name: "Linear Search",
+    time: "O(n)",
+    space: "O(1)",
+    description:
+      "Sequentially checks each element until the target is found."
+  },
+
+  binary: {
+    name: "Binary Search",
+    time: "O(log n)",
+    space: "O(1)",
+    description:
+      "Efficiently searches a sorted array by halving the search space."
   }
 
 };

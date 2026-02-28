@@ -7,29 +7,42 @@ const ControlPanel = ({
   setAlgorithm,
   arraySize,
   setArraySize,
+  target,
+  setTarget,
   isSorting,
   isPaused,
   setIsPaused
 }) => {
 
+  const isSearching =
+    algorithm === "linear" ||
+    algorithm === "binary";
+
   return (
     <div className="flex flex-wrap justify-center items-center gap-6 mb-6 text-white bg-gray-900 p-4 rounded-lg shadow-md">
 
-      {/* Algorithm Selector */}
+      {/* ================= ALGORITHM SELECT ================= */}
       <select
         value={algorithm}
         disabled={isSorting}
         onChange={(e) => setAlgorithm(e.target.value)}
         className="px-4 py-2 bg-gray-800 rounded"
       >
-        <option value="bubble">Bubble Sort</option>
-        <option value="selection">Selection Sort</option>
-        <option value="merge">Merge Sort</option>
-        <option value="quick">Quick Sort</option>
-        <option value="heap">Heap Sort</option>
+        <optgroup label="Sorting">
+          <option value="bubble">Bubble Sort</option>
+          <option value="selection">Selection Sort</option>
+          <option value="merge">Merge Sort</option>
+          <option value="quick">Quick Sort</option>
+          <option value="heap">Heap Sort</option>
+        </optgroup>
+
+        <optgroup label="Searching">
+          <option value="linear">Linear Search</option>
+          <option value="binary">Binary Search</option>
+        </optgroup>
       </select>
 
-      {/* Generate Array */}
+      {/* ================= GENERATE ================= */}
       <button
         onClick={generateArray}
         disabled={isSorting}
@@ -38,7 +51,7 @@ const ControlPanel = ({
         Generate
       </button>
 
-      {/* Start Sorting */}
+      {/* ================= START ================= */}
       <button
         onClick={startSort}
         disabled={isSorting}
@@ -47,7 +60,7 @@ const ControlPanel = ({
         Start
       </button>
 
-      {/* Pause / Resume */}
+      {/* ================= PAUSE ================= */}
       <button
         onClick={() => setIsPaused(prev => !prev)}
         disabled={!isSorting}
@@ -56,7 +69,23 @@ const ControlPanel = ({
         {isPaused ? "Resume" : "Pause"}
       </button>
 
-      {/* Speed Slider */}
+      {/* ================= TARGET INPUT ================= */}
+      {isSearching && (
+        <div className="flex items-center gap-2">
+          <span>Target</span>
+          <input
+            type="number"
+            value={target}
+            disabled={isSorting}
+            onChange={(e) =>
+              setTarget(Number(e.target.value))
+            }
+            className="w-20 px-2 py-1 bg-gray-800 rounded"
+          />
+        </div>
+      )}
+
+      {/* ================= SPEED ================= */}
       <div className="flex items-center gap-2">
         <span>Speed: {speed}</span>
         <input
@@ -64,13 +93,13 @@ const ControlPanel = ({
           min="10"
           max="200"
           value={speed}
-          onChange={(e) =>
+          onChange={(e)=>
             setSpeed(Number(e.target.value))
           }
         />
       </div>
 
-      {/* Array Size */}
+      {/* ================= SIZE ================= */}
       <div className="flex items-center gap-2">
         <span>Size: {arraySize}</span>
         <input
@@ -79,7 +108,7 @@ const ControlPanel = ({
           max="120"
           value={arraySize}
           disabled={isSorting}
-          onChange={(e) =>
+          onChange={(e)=>
             setArraySize(Number(e.target.value))
           }
         />
