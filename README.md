@@ -89,7 +89,7 @@ An interactive web application to visualize **Sorting**, **Searching**, and **Pa
 Clone the repository:
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/algorithm-visualizer.git
+git clone https://github.com/SKEL1NJA/algorithm-visualizer.git
 ```
 
 Navigate into project:
