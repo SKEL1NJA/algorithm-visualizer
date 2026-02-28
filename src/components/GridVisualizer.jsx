@@ -3,6 +3,9 @@ import { bfs } from "../algorithms/pathfinding/bfs";
 import { dfs } from "../algorithms/pathfinding/dfs";
 import { dijkstra } from "../algorithms/pathfinding/dijkstra";
 
+import PathfindingInfo
+from "./PathfindingInfo";
+
 const ROWS = 20;
 const COLS = 35;
 
@@ -41,9 +44,18 @@ export default function GridVisualizer() {
   const [speed,setSpeed] =
     useState(20);
 
-  const clearSearch = () => {
+  const [algorithm,setAlgorithm] =
+    useState("bfs");
 
-    const newGrid =
+  const algorithms={
+    bfs,
+    dfs,
+    dijkstra
+  };
+
+  const clearSearch=()=>{
+
+    const newGrid=
       grid.map(row =>
         row.map(node => ({
           ...node,
@@ -58,20 +70,20 @@ export default function GridVisualizer() {
     return newGrid;
   };
 
-  const runAlgo = async (algo) => {
+  const runAlgorithm=async()=>{
 
-    const fresh =
+    const fresh=
       clearSearch();
 
-    const start =
+    const start=
       fresh.flat()
       .find(n=>n.isStart);
 
-    const end =
+    const end=
       fresh.flat()
       .find(n=>n.isEnd);
 
-    await algo(
+    await algorithms[algorithm](
       fresh,
       start,
       end,
@@ -99,28 +111,33 @@ export default function GridVisualizer() {
   return(
     <div className="flex flex-col items-center">
 
-      <h2 className="text-white text-xl mb-4">
-        Pathfinding Visualizer
-      </h2>
+      {/* ✅ INFO PANEL */}
+      <PathfindingInfo
+        algorithm={algorithm}
+      />
 
       <div className="flex gap-4 mb-4">
 
+        <select
+          value={algorithm}
+          onChange={(e)=>
+            setAlgorithm(
+              e.target.value
+            )
+          }
+          className="bg-gray-800 text-white px-3 py-2 rounded"
+        >
+          <option value="bfs">BFS</option>
+          <option value="dfs">DFS</option>
+          <option value="dijkstra">
+            Dijkstra
+          </option>
+        </select>
+
         <button
-          onClick={()=>runAlgo(bfs)}
+          onClick={runAlgorithm}
           className="bg-blue-600 px-4 py-2 text-white rounded">
-          BFS
-        </button>
-
-        <button
-          onClick={()=>runAlgo(dfs)}
-          className="bg-purple-600 px-4 py-2 text-white rounded">
-          DFS
-        </button>
-
-        <button
-          onClick={()=>runAlgo(dijkstra)}
-          className="bg-green-600 px-4 py-2 text-white rounded">
-          Dijkstra
+          Run
         </button>
 
         <input
@@ -156,12 +173,7 @@ export default function GridVisualizer() {
               return(
                 <div
                   key={c}
-                  onClick={()=>
-                    toggleWall(
-                      node.row,
-                      node.col
-                    )
-                  }
+                  onClick={()=>toggleWall(node.row,node.col)}
                   className={`w-6 h-6 border border-gray-700 ${color}`}
                 />
               );
