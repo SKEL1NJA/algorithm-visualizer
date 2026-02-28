@@ -30,6 +30,14 @@ export const algorithmInfo = {
     space: "O(log n)",
     description:
       "Uses a pivot element to partition the array into smaller subarrays."
+  },
+
+  heap: {
+    name: "Heap Sort",
+    time: "O(n log n)",
+    space: "O(1)",
+    description:
+      "Builds a max heap and repeatedly extracts the maximum element."
   }
 
 };

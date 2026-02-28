@@ -3,6 +3,7 @@ import { bubbleSort } from "../algorithms/sorting/bubbleSort";
 import { selectionSort } from "../algorithms/sorting/selectionSort";
 import { mergeSort } from "../algorithms/sorting/mergeSort";
 import { quickSort } from "../algorithms/sorting/quickSort";
+import { heapSort } from "../algorithms/sorting/heapSort";
 
 import ControlPanel from "./ControlPanel";
 import AlgorithmInfo from "./AlgorithmInfo";
@@ -37,7 +38,8 @@ const Visualizer = () => {
     bubble: bubbleSort,
     selection: selectionSort,
     merge: mergeSort,
-    quick: quickSort
+    quick: quickSort,
+    heap: heapSort
   };
 
   const generateArray = () => {

@@ -26,6 +26,7 @@ const ControlPanel = ({
         <option value="selection">Selection Sort</option>
         <option value="merge">Merge Sort</option>
         <option value="quick">Quick Sort</option>
+        <option value="heap">Heap Sort</option>
       </select>
 
       {/* Generate Array */}
