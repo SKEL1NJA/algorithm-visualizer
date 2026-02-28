@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { bfs } from "../algorithms/pathfinding/bfs";
 import { dfs } from "../algorithms/pathfinding/dfs";
+import { dijkstra } from "../algorithms/pathfinding/dijkstra";
 
 const ROWS = 20;
 const COLS = 35;
@@ -20,7 +21,9 @@ const createGrid = () => {
         isWall: false,
         isVisited: false,
         isPath: false,
-        previousNode: null
+        previousNode: null,
+        distance: Infinity,
+        weight: 1
       });
     }
 
@@ -32,41 +35,44 @@ const createGrid = () => {
 
 export default function GridVisualizer() {
 
-  const [grid, setGrid] =
+  const [grid,setGrid] =
     useState(createGrid());
 
-  const [speed, setSpeed] =
+  const [speed,setSpeed] =
     useState(20);
 
-  // ================= CLEAR SEARCH =================
   const clearSearch = () => {
 
-    const newGrid = grid.map(row =>
-      row.map(node => ({
-        ...node,
-        isVisited: false,
-        isPath: false,
-        previousNode: null
-      }))
-    );
+    const newGrid =
+      grid.map(row =>
+        row.map(node => ({
+          ...node,
+          isVisited:false,
+          isPath:false,
+          previousNode:null,
+          distance:Infinity
+        }))
+      );
 
     setGrid(newGrid);
     return newGrid;
   };
 
-  // ================= BFS =================
-  const runBFS = async () => {
+  const runAlgo = async (algo) => {
 
-    const freshGrid = clearSearch();
+    const fresh =
+      clearSearch();
 
     const start =
-      freshGrid.flat().find(n => n.isStart);
+      fresh.flat()
+      .find(n=>n.isStart);
 
     const end =
-      freshGrid.flat().find(n => n.isEnd);
+      fresh.flat()
+      .find(n=>n.isEnd);
 
-    await bfs(
-      freshGrid,
+    await algo(
+      fresh,
       start,
       end,
       setGrid,
@@ -74,106 +80,83 @@ export default function GridVisualizer() {
     );
   };
 
-  // ================= DFS =================
-  const runDFS = async () => {
+  const toggleWall=(r,c)=>{
 
-    const freshGrid = clearSearch();
-
-    const start =
-      freshGrid.flat().find(n => n.isStart);
-
-    const end =
-      freshGrid.flat().find(n => n.isEnd);
-
-    await dfs(
-      freshGrid,
-      start,
-      end,
-      setGrid,
-      speed
-    );
-  };
-
-  // ================= WALL =================
-  const toggleWall = (row, col) => {
-
-    const newGrid =
-      grid.map(r =>
-        r.map(n => ({ ...n }))
+    const newGrid=
+      grid.map(row =>
+        row.map(n=>({...n}))
       );
 
-    const node = newGrid[row][col];
+    const node=newGrid[r][c];
 
-    if (!node.isStart && !node.isEnd)
-      node.isWall = !node.isWall;
+    if(!node.isStart &&
+       !node.isEnd)
+      node.isWall=!node.isWall;
 
     setGrid(newGrid);
   };
 
-  // ================= UI =================
-  return (
+  return(
     <div className="flex flex-col items-center">
 
       <h2 className="text-white text-xl mb-4">
         Pathfinding Visualizer
       </h2>
 
-      {/* CONTROLS */}
       <div className="flex gap-4 mb-4">
 
         <button
-          onClick={runBFS}
-          className="px-4 py-2 bg-blue-600 text-white rounded"
-        >
-          Run BFS
+          onClick={()=>runAlgo(bfs)}
+          className="bg-blue-600 px-4 py-2 text-white rounded">
+          BFS
         </button>
 
         <button
-          onClick={runDFS}
-          className="px-4 py-2 bg-purple-600 text-white rounded"
-        >
-          Run DFS
+          onClick={()=>runAlgo(dfs)}
+          className="bg-purple-600 px-4 py-2 text-white rounded">
+          DFS
         </button>
 
-        {/* SPEED CONTROL */}
-        <div className="text-white flex items-center gap-2">
-          Speed
-          <input
-            type="range"
-            min="5"
-            max="100"
-            value={speed}
-            onChange={(e) =>
-              setSpeed(Number(e.target.value))
-            }
-          />
-        </div>
+        <button
+          onClick={()=>runAlgo(dijkstra)}
+          className="bg-green-600 px-4 py-2 text-white rounded">
+          Dijkstra
+        </button>
+
+        <input
+          type="range"
+          min="5"
+          max="100"
+          value={speed}
+          onChange={(e)=>
+            setSpeed(Number(e.target.value))
+          }
+        />
 
       </div>
 
-      {/* GRID */}
       <div>
-        {grid.map((row, rIdx) => (
-          <div key={rIdx} className="flex">
-            {row.map((node, cIdx) => {
+        {grid.map((row,r)=>(
+          <div key={r} className="flex">
+            {row.map((node,c)=>{
 
-              let color = "bg-gray-800";
+              let color="bg-gray-800";
 
-              if (node.isStart)
-                color = "bg-green-500";
-              else if (node.isEnd)
-                color = "bg-red-500";
-              else if (node.isWall)
-                color = "bg-black";
-              else if (node.isPath)
-                color = "bg-yellow-400";
-              else if (node.isVisited)
-                color = "bg-blue-400";
+              if(node.isStart)
+                color="bg-green-500";
+              else if(node.isEnd)
+                color="bg-red-500";
+              else if(node.isWall)
+                color="bg-black";
+              else if(node.isPath)
+                color="bg-yellow-400";
+              else if(node.isVisited)
+                color="bg-blue-400";
 
-              return (
+              return(
                 <div
-                  key={cIdx}
-                  onClick={() =>
+                  key={c}
+                  onClick={()=>
                     toggleWall(
                       node.row,
                       node.col
