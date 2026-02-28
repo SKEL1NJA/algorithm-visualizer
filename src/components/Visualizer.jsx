@@ -1,85 +1,115 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { bubbleSort } from "../algorithms/sorting/bubbleSort";
-import ControlPanel from "./ControlPanel";
 import { selectionSort } from "../algorithms/sorting/selectionSort";
 import { mergeSort } from "../algorithms/sorting/mergeSort";
+
+import ControlPanel from "./ControlPanel";
 import AlgorithmInfo from "./AlgorithmInfo";
 
 const Visualizer = () => {
 
-  const createArray = () => {
-    const arr = [];
-    for (let i = 0; i < 40; i++) {
-      arr.push(Math.floor(Math.random() * 100) + 5);
-    }
-    return arr;
+  const createArray = (size) => {
+    return Array.from(
+      { length: size },
+      () => Math.floor(Math.random() * 100) + 5
+    );
   };
 
-  const [array, setArray] = useState(createArray);
+  const [arraySize, setArraySize] = useState(40);
+  const [array, setArray] = useState(() => createArray(40));
   const [activeIndices, setActiveIndices] = useState([]);
   const [sortedIndices, setSortedIndices] = useState([]);
+
   const [speed, setSpeed] = useState(60);
-  const [isSorting, setIsSorting] = useState(false);
   const [algorithm, setAlgorithm] = useState("bubble");
+
+  const [isSorting, setIsSorting] = useState(false);
+  const [isPaused, setIsPaused] = useState(false);
+
+  // ✅ LIVE PAUSE REFERENCE
+  const pauseRef = useRef(false);
+
+  useEffect(() => {
+    pauseRef.current = isPaused;
+  }, [isPaused]);
 
   const generateArray = () => {
     if (isSorting) return;
-    setArray(createArray());
+
+    setArray(createArray(arraySize));
     setSortedIndices([]);
+    setActiveIndices([]);
   };
 
   const startSort = async () => {
-  setIsSorting(true);
 
-  if (algorithm === "bubble") {
-    await bubbleSort(
-      array,
-      setArray,
-      setActiveIndices,
-      setSortedIndices,
-      speed
-    );
-  }
+    if (isSorting) return;
 
-  if (algorithm === "selection") {
-    await selectionSort(
-      array,
-      setArray,
-      setActiveIndices,
-      setSortedIndices,
-      speed
-    );
-  }
+    setIsSorting(true);
 
-  if (algorithm === "merge") {
-    await mergeSort(
-      array,
-      setArray,
-      setActiveIndices,
-      setSortedIndices,
-      speed
-    );
-  }
+    const controls = {
+      get paused() {
+        return pauseRef.current;
+      }
+    };
 
-  setIsSorting(false);
-};
+    if (algorithm === "bubble") {
+      await bubbleSort(
+        array,
+        setArray,
+        setActiveIndices,
+        setSortedIndices,
+        speed,
+        controls
+      );
+    }
+
+    if (algorithm === "selection") {
+      await selectionSort(
+        array,
+        setArray,
+        setActiveIndices,
+        setSortedIndices,
+        speed,
+        controls
+      );
+    }
+
+    if (algorithm === "merge") {
+      await mergeSort(
+        array,
+        setArray,
+        setActiveIndices,
+        setSortedIndices,
+        speed,
+        controls
+      );
+    }
+
+    setIsPaused(false);
+    setIsSorting(false);
+  };
 
   return (
-    <div className="flex flex-col items-center bg-gray-950 h-[80vh] p-6">
+    <div className="flex flex-col items-center bg-gray-950 min-h-screen p-6">
 
       <AlgorithmInfo algorithm={algorithm} />
-    
+
       <ControlPanel
         generateArray={generateArray}
         startSort={startSort}
         speed={speed}
         setSpeed={setSpeed}
-        isSorting={isSorting}
         algorithm={algorithm}
         setAlgorithm={setAlgorithm}
+        arraySize={arraySize}
+        setArraySize={setArraySize}
+        isSorting={isSorting}
+        isPaused={isPaused}
+        setIsPaused={setIsPaused}
       />
 
-      <div className="w-full max-w-6xl h-full border border-gray-700 rounded-lg flex items-end justify-center gap-1 p-4">
+      <div className="w-full max-w-6xl h-[70vh] border border-gray-700 rounded-lg flex items-end justify-center gap-1 p-4">
 
         {array.map((value, index) => {
 
@@ -93,8 +123,11 @@ const Visualizer = () => {
           return (
             <div
               key={index}
-              className={`w-4 transition-all duration-100 ${color}`}
-              style={{ height: `${value}%` }}
+              className={`transition-all duration-100 ${color}`}
+              style={{
+                height: `${value}%`,
+                width: `${600 / arraySize}px`
+              }}
             />
           );
         })}

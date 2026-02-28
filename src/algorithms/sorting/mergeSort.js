@@ -6,10 +6,14 @@ export const mergeSort = async (
   setArray,
   setActiveIndices,
   setSortedIndices,
-  speed
+  speed,
+  controls
 ) => {
 
   let arr = [...array];
+
+  // ✅ reset sorted state
+  setSortedIndices([]);
 
   await mergeSortHelper(
     arr,
@@ -17,10 +21,11 @@ export const mergeSort = async (
     arr.length - 1,
     setArray,
     setActiveIndices,
-    speed
+    speed,
+    controls
   );
 
-  // mark all sorted
+  // ✅ mark fully sorted
   setSortedIndices(
     Array.from({ length: arr.length }, (_, i) => i)
   );
@@ -28,14 +33,23 @@ export const mergeSort = async (
   setActiveIndices([]);
 };
 
+
+// ================= HELPER =================
+
 async function mergeSortHelper(
   arr,
   left,
   right,
   setArray,
   setActiveIndices,
-  speed
+  speed,
+  controls
 ) {
+
+  // ✅ pause works even during recursion
+  while (controls?.paused) {
+    await sleep(50);
+  }
 
   if (left >= right) return;
 
@@ -47,7 +61,8 @@ async function mergeSortHelper(
     mid,
     setArray,
     setActiveIndices,
-    speed
+    speed,
+    controls
   );
 
   await mergeSortHelper(
@@ -56,7 +71,8 @@ async function mergeSortHelper(
     right,
     setArray,
     setActiveIndices,
-    speed
+    speed,
+    controls
   );
 
   await merge(
@@ -66,9 +82,13 @@ async function mergeSortHelper(
     right,
     setArray,
     setActiveIndices,
-    speed
+    speed,
+    controls
   );
 }
+
+
+// ================= MERGE =================
 
 async function merge(
   arr,
@@ -77,7 +97,8 @@ async function merge(
   right,
   setArray,
   setActiveIndices,
-  speed
+  speed,
+  controls
 ) {
 
   let temp = [];
@@ -86,7 +107,13 @@ async function merge(
 
   while (i <= mid && j <= right) {
 
+    // ✅ pause support
+    while (controls?.paused) {
+      await sleep(50);
+    }
+
     setActiveIndices([i, j]);
+
     await sleep(speed);
 
     if (arr[i] <= arr[j]) {
@@ -100,9 +127,16 @@ async function merge(
   while (j <= right) temp.push(arr[j++]);
 
   for (let k = left; k <= right; k++) {
+
+    // ✅ pause during overwrite
+    while (controls?.paused) {
+      await sleep(50);
+    }
+
     arr[k] = temp[k - left];
 
     setArray([...arr]);
+
     await sleep(speed);
   }
 }
