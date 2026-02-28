@@ -19,6 +19,7 @@ const ControlPanel = ({
       >
         <option value="bubble">Bubble Sort</option>
         <option value="selection">Selection Sort</option>
+        <option value="merge">Merge Sort</option>
       </select>
 
       <button
