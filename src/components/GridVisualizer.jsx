@@ -18,7 +18,9 @@ const createGrid = () => {
         isStart: r === 10 && c === 5,
         isEnd: r === 10 && c === 25,
         isWall: false,
-        isVisited: false
+        isVisited: false,
+        isPath: false,
+        previousNode: null
       });
     }
 
@@ -36,10 +38,13 @@ const GridVisualizer = () => {
   const [speed, setSpeed] =
     useState(20);
 
-  // ================= WALL TOGGLE =================
+  // ================= TOGGLE WALL =================
   const toggleWall = (row, col) => {
 
-    const newGrid = grid.slice();
+    const newGrid = grid.map(r =>
+      r.map(node => ({ ...node }))
+    );
+
     const node = newGrid[row][col];
 
     if (!node.isStart && !node.isEnd) {
@@ -49,13 +54,15 @@ const GridVisualizer = () => {
     setGrid(newGrid);
   };
 
-  // ================= RESET VISITS =================
+  // ================= RESET VISITED + PATH =================
   const resetVisited = () => {
 
     const newGrid = grid.map(row =>
       row.map(node => ({
         ...node,
-        isVisited: false
+        isVisited: false,
+        isPath: false,
+        previousNode: null
       }))
     );
 
@@ -65,16 +72,25 @@ const GridVisualizer = () => {
   // ================= RUN BFS =================
   const runBFS = async () => {
 
-    resetVisited();
+    const freshGrid = grid.map(row =>
+      row.map(node => ({
+        ...node,
+        isVisited: false,
+        isPath: false,
+        previousNode: null
+      }))
+    );
+
+    setGrid(freshGrid);
 
     const startNode =
-      grid.flat().find(n => n.isStart);
+      freshGrid.flat().find(n => n.isStart);
 
     const endNode =
-      grid.flat().find(n => n.isEnd);
+      freshGrid.flat().find(n => n.isEnd);
 
     await bfs(
-      grid,
+      freshGrid,
       startNode,
       endNode,
       setGrid,
@@ -136,6 +152,8 @@ const GridVisualizer = () => {
                 color = "bg-red-500";
               else if (node.isWall)
                 color = "bg-black";
+              else if (node.isPath)
+                color = "bg-yellow-400";
               else if (node.isVisited)
                 color = "bg-blue-400";
 
