@@ -1,4 +1,4 @@
-# 🚀 Algorithm Visualizer
+# 🚀 AlgoDarshan
 
 An interactive web application to visualize **Sorting**, **Searching**, and **Pathfinding Algorithms** in real time with animated execution and algorithm insights.
 
@@ -89,13 +89,13 @@ An interactive web application to visualize **Sorting**, **Searching**, and **Pa
 Clone the repository:
 
 ```bash
-git clone https://github.com/SKEL1NJA/algorithm-visualizer.git
+git clone https://github.com/SKEL1NJA/AlgoDarshan.git
 ```
 
 Navigate into project:
 
 ```bash
-cd algorithm-visualizer
+cd AlgoDarshan
 ```
 
 Install dependencies:
